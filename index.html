@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="TwinTone"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#0d1316}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>TwinTone</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#0d1316">
@@ -16,11 +16,13 @@
   --muted: #8b9ca5;
   --left: #3cc4cb;
   --right: #f0765b;
+  --third: #b59cff;
   --round: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif;
   --body: -apple-system, BlinkMacSystemFont, "Nunito", system-ui, sans-serif;
   color-scheme: dark;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
 html, body { background: var(--bg); color: var(--text); }
 body {
   font-family: var(--body); font-size: 15px; line-height: 1.45;
@@ -174,6 +176,71 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
 .pt b { display: block; font-size: 16px; }
 .pt span { color: var(--muted); font-size: 14.5px; }
 .onboard .btn { width: 100%; min-height: 54px; font-size: 17px; border-radius: 16px; margin-top: auto; }
+/* sessions */
+.sess-intro { color: var(--muted); font-size: 14px; margin: 8px 0 12px; }
+.sess-quick { display: flex; flex-direction: column; gap: 8px; }
+.sq { display: flex; align-items: center; gap: 12px; background: var(--raised); border-radius: 14px; padding: 10px 12px; }
+.pbtn { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--text); color: var(--bg); display: grid; place-items: center; }
+.pbtn svg { width: 17px; height: 17px; margin-left: 2px; }
+.sq .meta { min-width: 0; flex: 1; }
+.t { font-weight: 800; display: block; }
+.s { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; display: block; }
+svg.mini { display: block; width: 100%; height: 22px; margin-top: 6px; }
+svg.tl { display: block; width: 100%; height: 90px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.btn-sec { background: var(--raised); color: var(--text); border-radius: 12px; padding: 11px 16px; font-weight: 800; }
+.two .btn, .two .btn-sec { min-height: 46px; }
+.sess-row { padding: 12px 14px; border-top: 1px solid var(--line); }
+.sess-row:first-child { border-top: 0; }
+.sess-row svg.mini { height: 28px; }
+.sess-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chipbtn { padding: 7px 13px; border-radius: 99px; background: var(--raised); font-size: 13px; font-weight: 700; }
+.chipbtn.primary { background: var(--text); color: var(--bg); }
+.chipbtn.warn { color: var(--right); }
+.txt { width: 100%; background: var(--surface); border: 1px solid var(--line); color: var(--text); border-radius: 12px; padding: 11px 12px; font: 600 15px var(--body); }
+textarea.txt { font: 500 12.5px ui-monospace, Menlo, monospace; resize: vertical; word-break: break-all; }
+.err { color: var(--right); font-size: 13.5px; margin: 8px 2px 0; }
+.toast { background: var(--raised); border-radius: 12px; padding: 10px 14px; font-size: 14px; font-weight: 700; margin: 6px 0 0; }
+.preview { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-top: 12px; }
+.preview svg.tl { height: 70px; }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.stage-top { display: flex; gap: 8px; align-items: center; }
+.stage-num { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--raised); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+.stage-top input { flex: 1; min-width: 0; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--text); font: 800 16px var(--body); padding: 4px 0; }
+.tools { display: flex; flex: none; }
+.tools button, .lx { width: 32px; height: 32px; display: grid; place-items: center; color: var(--muted); border-radius: 8px; }
+.tools svg, .lx svg { width: 17px; height: 17px; }
+.tools button:disabled, .lx:disabled { opacity: .3; cursor: default; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 700; min-width: 0; }
+.numin { -webkit-appearance: none; appearance: none; background: var(--raised); border: 0; color: var(--text); border-radius: 10px; padding: 9px 10px; font: 700 15px var(--round); font-variant-numeric: tabular-nums; width: 100%; min-width: 0; }
+.numin.static { font: 600 13.5px var(--body); color: var(--muted); }
+.layer { display: grid; grid-template-columns: 10px 1fr 1fr 46px 32px; gap: 8px; align-items: end; }
+.layer .sw { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 15px; }
+.lband { font-size: 11.5px; font-weight: 800; color: var(--muted); padding-bottom: 11px; text-align: center; }
+.lx { margin-bottom: 3px; }
+.add { width: 100%; border: 1px dashed var(--line); border-radius: 12px; padding: 10px; color: var(--muted); font-weight: 700; }
+.ed-foot { position: sticky; bottom: calc(-24px - env(safe-area-inset-bottom, 0px)); background: var(--bg); display: grid; grid-template-columns: 1fr 2fr; gap: 8px; padding: 12px 0 calc(36px + env(safe-area-inset-bottom, 0px)); margin: 12px 0 calc(-24px - env(safe-area-inset-bottom, 0px)); }
+.ed-foot button { min-height: 48px; }
+input[type=range]:disabled { opacity: .35; }
+
+/* session player */
+.player { position: fixed; inset: 0; z-index: 40; background: radial-gradient(120% 70% at 50% 0%, #15252b 0%, #0d1316 62%); overflow-y: auto;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
+.player-in { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.player h1 { font-family: var(--round); font-weight: 900; font-size: 30px; margin: 0; line-height: 1.1; text-wrap: balance; }
+.pl-stage { margin: -8px 0 0; color: var(--muted); font-weight: 700; }
+.player .big { margin: 0; align-items: center; }
+.player .big .band { margin-left: 6px; }
+.pl-layers { display: flex; flex-direction: column; gap: 8px; }
+.pl-layer { display: flex; align-items: center; gap: 10px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.pl-layer i { flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.pl-layer span:last-child { margin-left: auto; color: var(--muted); font-weight: 700; text-align: right; }
+.pl-times { font-size: 13px; color: var(--muted); font-weight: 700; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.pl-ctrls { display: flex; justify-content: center; padding: 4px 0; }
+.pl-play { width: 84px; height: 84px; border-radius: 50%; background: var(--text); color: var(--bg); display: grid; place-items: center; }
+.pl-play.on { background: var(--right); }
+.pl-play svg { width: 32px; height: 32px; }
 @media (prefers-reduced-motion: reduce) { .sheet { animation: none; } * { transition: none !important; } }
 </style>
 
@@ -211,6 +278,13 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
     <div class="row"><span class="label">Carrier tone</span><span class="num" style="font-weight:700" id="carrierVal">200 Hz</span></div>
     <input type="range" id="carrier" min="0" max="1000" step="1" aria-label="Carrier tone" style="--c: var(--muted)">
     <p class="hint">Moves both ears together and keeps the beat.</p>
+  </section>
+
+  <section class="card" aria-label="Sessions">
+    <div class="row"><span class="label">Sessions</span><span class="band">Up to 3 tone layers</span></div>
+    <p class="sess-intro">Timed programs that move through stages, blending layered tones and background sound as they go. Build your own and share it with a code.</p>
+    <div class="sess-quick" id="sessQuick"></div>
+    <div class="two"><button class="btn-sec" id="sessBrowse">All sessions</button><button class="btn" id="sessCreate">Create session</button></div>
   </section>
 
   <div class="ears" id="ears"></div>
@@ -270,6 +344,26 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
   </div>
 </div>
 
+<div class="player" id="player" hidden role="dialog" aria-modal="true" aria-label="Session player">
+  <div class="player-in">
+    <div class="row"><span class="label">Session</span>
+      <button class="icon-btn" id="plClose" aria-label="End session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <h1 id="plName"></h1>
+    <p class="pl-stage" id="plStage"></p>
+    <div class="big num"><b id="plBeat">0</b><span>Hz</span><span class="band" id="plBand"></span></div>
+    <div class="pl-layers" id="plLayers"></div>
+    <div class="preview" style="margin-top:0"><div id="plTl"></div>
+      <div class="row pl-times"><span id="plEl">0:00</span><span id="plRem">0:00</span></div></div>
+    <div class="pl-ctrls"><button class="pl-play" id="plPlay" aria-label="Pause"><svg id="plPlayIcon" viewBox="0 0 24 24" fill="currentColor"></svg></button></div>
+    <div class="vol">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9h4l5-4v14l-5-4H4z"/></svg>
+      <input type="range" id="plVol" min="0" max="100" value="30" aria-label="Volume">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" stroke="none"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" stroke-linecap="round"/></svg>
+    </div>
+    <p class="hint" style="text-align:center">Keep TwinTone open. The screen stays on during a session.</p>
+  </div>
+</div>
+
 <script>
 (() => {
   const $ = id => document.getElementById(id);
@@ -316,9 +410,10 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
   function fade() { if (!st.sleepEnd) return 1; const rem = (st.sleepEnd - Date.now()) / 1000; return rem >= FADE ? 1 : Math.max(0, rem / FADE); }
   const set = (p, v, tc = .02) => { if (ctx) p.setTargetAtTime(v, ctx.currentTime, tc); };
 
-  function makeNoise(type) {
-    const sr = ctx.sampleRate, L = sr * 6, F = Math.floor(sr * .25);
-    const buf = ctx.createBuffer(2, L, sr);
+  function makeNoise(type, ac) {
+    ac = ac || ctx;
+    const sr = ac.sampleRate, L = sr * 6, F = Math.floor(sr * .25);
+    const buf = ac.createBuffer(2, L, sr);
     for (let c = 0; c < 2; c++) {
       const x = new Float32Array(L + F);
       let b0 = 0, b1 = 0, b2 = 0, br = 0;
@@ -358,8 +453,13 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
     noiseGain = ctx.createGain(); noiseGain.gain.value = 0;
     merger.connect(out); noiseGain.connect(out); out.connect(ctx.destination);
     startNoise();
-    // iPhone: a silent media element lets Web Audio play with the ring/silent switch on.
+    ensureKeepAlive();
+  }
+
+  // iPhone: a silent media element lets Web Audio play with the ring/silent switch on.
+  function ensureKeepAlive() {
     try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+    if (keepAlive) return;
     try {
       const sr = 8000, n = sr, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
       const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
@@ -371,6 +471,7 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
   }
 
   async function play() {
+    if (S.sess) closePlayer();
     if (!ctx) build();
     try { if (ctx.state !== 'running') await ctx.resume(); } catch {}
     try { keepAlive && keepAlive.play().catch(() => {}); } catch {}
@@ -602,7 +703,445 @@ input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bord
     $('sheet').querySelector('[data-close]').onclick = closeSheet;
   }
 
+  /* ---------- sessions: data ---------- */
+  const SESS_NOISE = { off: 'Off', white: 'White noise', pink: 'Pink noise', brown: 'Brown noise', surf: 'Ocean surf' };
+  const LAYER_COLORS = ['#3cc4cb', '#f0765b', '#b59cff'];
+  const MAXL = 3;
+  const BUILTIN_SESS = [
+    { name: 'Theta Drift', stages: [
+      { name: 'Settle in', min: 5, ramp: 0, noise: 'surf', nl: .5, layers: [{ c: 200, b: 10 }] },
+      { name: 'Slow down', min: 8, ramp: 240, noise: 'surf', nl: .42, layers: [{ c: 200, b: 7 }, { c: 100, b: 7 }] },
+      { name: 'Deep theta', min: 22, ramp: 180, noise: 'surf', nl: .35, layers: [{ c: 200, b: 4 }, { c: 100, b: 4 }, { c: 300, b: 6 }] },
+      { name: 'Come back', min: 5, ramp: 180, noise: 'surf', nl: .45, layers: [{ c: 200, b: 10 }] }] },
+    { name: 'Quiet Mind', stages: [
+      { name: 'Arrive', min: 4, ramp: 0, noise: 'pink', nl: .35, layers: [{ c: 210, b: 10 }] },
+      { name: 'Settle', min: 12, ramp: 180, noise: 'pink', nl: .3, layers: [{ c: 210, b: 7 }, { c: 140, b: 6 }] },
+      { name: 'Return', min: 4, ramp: 120, noise: 'pink', nl: .35, layers: [{ c: 210, b: 10 }] }] },
+    { name: 'Sleep Descent', stages: [
+      { name: 'Unwind', min: 10, ramp: 0, noise: 'brown', nl: .45, layers: [{ c: 180, b: 8 }] },
+      { name: 'Drift', min: 15, ramp: 300, noise: 'brown', nl: .4, layers: [{ c: 160, b: 5 }, { c: 90, b: 4 }] },
+      { name: 'Deep rest', min: 20, ramp: 300, noise: 'brown', nl: .35, layers: [{ c: 140, b: 2.5 }, { c: 90, b: 2 }] }] },
+    { name: 'Focus Block', stages: [
+      { name: 'Warm up', min: 3, ramp: 0, noise: 'pink', nl: .25, layers: [{ c: 220, b: 12 }] },
+      { name: 'Work', min: 20, ramp: 120, noise: 'pink', nl: .22, layers: [{ c: 220, b: 16 }, { c: 330, b: 18 }] },
+      { name: 'Ease off', min: 2, ramp: 60, noise: 'pink', nl: .25, layers: [{ c: 220, b: 10 }] }] }
+  ];
+
+  function num(v, lo, hi, d) { v = parseFloat(v); return isNaN(v) ? d : Math.min(hi, Math.max(lo, v)); }
+  function normSess(s) {
+    if (!s || !Array.isArray(s.stages)) return null;
+    const stages = s.stages.slice(0, 20).map((x, i) => ({
+      name: String((x && x.name) || `Stage ${i + 1}`).slice(0, 30),
+      min: Math.round(num(x && x.min, 1, 180, 5)),
+      ramp: Math.round(num(x && x.ramp, 0, 600, 60)),
+      noise: x && SESS_NOISE[x.noise] ? x.noise : 'off',
+      nl: num(x && x.nl, 0, 1, .35),
+      layers: (x && Array.isArray(x.layers) ? x.layers : []).slice(0, MAXL)
+        .map(l => ({ c: r2(num(l && l.c, 20, 1500, 200)), b: r2(num(l && l.b, 0, 40, 4)) }))
+    })).filter(x => x.layers.length);
+    if (!stages.length) return null;
+    return { name: String(s.name || '').trim().slice(0, 40) || 'Untitled session', stages };
+  }
+  let mySess = (store.get('twintone.sessions', []) || []).map(normSess).filter(Boolean);
+  const saveSess = () => { store.set('twintone.sessions', mySess); renderQuick(); };
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const pick = ref => ref[0] === 'b' ? BUILTIN_SESS[+ref.slice(1)] : mySess[+ref.slice(1)];
+  const timeline = s => { let t = 0; return s.stages.map(x => { const o = Object.assign({}, x, { start: t, end: t + x.min * 60 }); t = o.end; return o; }); };
+  const totalSec = s => s.stages.reduce((a, x) => a + x.min * 60, 0);
+  const durLabel = sec => { const m = Math.round(sec / 60); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} hr${m % 60 ? ' ' + (m % 60) + ' min' : ''}`; };
+  const one = v => String(Math.round(v * 10) / 10);
+  function sessMeta(s) {
+    const bs = s.stages.flatMap(x => x.layers.map(l => l.b)), lo = Math.min(...bs), hi = Math.max(...bs);
+    return `${durLabel(totalSec(s))} · ${s.stages.length} stage${s.stages.length > 1 ? 's' : ''} · ${lo === hi ? fmt(lo) : fmt(lo) + '–' + fmt(hi)} Hz beat`;
+  }
+  function encodeSess(s) {
+    const o = { n: s.name, s: s.stages.map(x => [x.name, x.min, x.ramp, x.noise, Math.round(x.nl * 100) / 100, x.layers.map(l => [l.c, l.b])]) };
+    return 'TT1-' + btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+  }
+  function decodeSess(code) {
+    try {
+      code = String(code).replace(/\s+/g, '');
+      const at = code.indexOf('TT1-'); if (at < 0) return null;
+      const o = JSON.parse(decodeURIComponent(escape(atob(code.slice(at + 4)))));
+      return normSess({ name: o.n, stages: (o.s || []).map(a => ({ name: a[0], min: a[1], ramp: a[2], noise: a[3], nl: a[4], layers: (a[5] || []).map(p => ({ c: p[0], b: p[1] })) })) });
+    } catch { return null; }
+  }
+
+  // Beat-over-time graph. Each tone layer is one line; ramps show as slopes.
+  function tlSVG(s, h, opts = {}) {
+    const tl = timeline(s), total = tl[tl.length - 1].end || 1;
+    const maxB = Math.max(12, ...s.stages.flatMap(x => x.layers.map(l => l.b))) * 1.12;
+    const X = t => +(t / total * 1000).toFixed(1), Y = b => +(h - 4 - b / maxB * (h - 10)).toFixed(1);
+    let out = '';
+    tl.forEach((x, i) => { if (i % 2) out += `<rect x="${X(x.start)}" y="0" width="${(X(x.end) - X(x.start)).toFixed(1)}" height="${h}" fill="#ffffff" fill-opacity=".035"/>`; });
+    if (opts.guides) [4, 8, 13, 30].filter(b => b < maxB).forEach(b => { out += `<line x1="0" x2="1000" y1="${Y(b)}" y2="${Y(b)}" stroke="#2c3b43" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>`; });
+    for (let k = MAXL - 1; k >= 0; k--) {
+      let d = '', open = false;
+      tl.forEach(x => {
+        const l = x.layers[k];
+        if (!l) { open = false; return; }
+        const ramp = Math.min(x.ramp, x.end - x.start);
+        d += open ? ` L${X(x.start + ramp)},${Y(l.b)}` : ` M${X(x.start)},${Y(l.b)}`;
+        d += ` L${X(x.end)},${Y(l.b)}`; open = true;
+      });
+      if (d) out += `<path d="${d}" fill="none" stroke="${LAYER_COLORS[k]}" stroke-width="${opts.w || 2}" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+    }
+    if (opts.progress) out += `<rect id="tlProg" x="0" y="0" width="0" height="${h}" fill="#e7eef1" fill-opacity=".07"/><line id="tlLine" x1="0" x2="0" y1="0" y2="${h}" stroke="#e7eef1" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+    return `<svg class="${opts.cls || 'tl'}" viewBox="0 0 1000 ${h}" preserveAspectRatio="none" aria-hidden="true">${out}</svg>`;
+  }
+  function valuesAt(tl, t) {
+    let i = tl.findIndex(x => t < x.end); if (i < 0) i = tl.length - 1;
+    const x = tl[i], ramp = Math.min(x.ramp, x.end - x.start), u = ramp > 0 ? Math.min(1, Math.max(0, (t - x.start) / ramp)) : 1;
+    return { i, layers: x.layers.map((l, k) => { const p = i ? tl[i - 1].layers[k] : null; return p ? { c: p.c + (l.c - p.c) * u, b: p.b + (l.b - p.b) * u } : l; }) };
+  }
+
+  /* ---------- sessions: audio ---------- */
+  // The whole program is scheduled on the audio clock up front, so it keeps
+  // perfect time even when the browser slows down page timers.
+  const S = { ac: null, vol: null, sess: null, tl: null, t0: 0, total: 0, done: false, wake: null, raf: 0 };
+
+  function startSession(sess) {
+    stopSession();
+    if (st.playing) pause();
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = new AC();
+    S.ac = ac; S.sess = sess; S.tl = timeline(sess); S.total = S.tl[S.tl.length - 1].end; S.done = false;
+    ensureKeepAlive();
+    try { keepAlive && keepAlive.play().catch(() => {}); } catch {}
+    try { ac.resume(); } catch {}
+
+    const vol = ac.createGain(); vol.gain.value = st.master * st.master; S.vol = vol;
+    const env = ac.createGain(); env.gain.value = 0;
+    const merger = ac.createChannelMerger(2);
+    merger.connect(env); env.connect(vol); vol.connect(ac.destination);
+    const tl = S.tl, T0 = ac.currentTime + .2, END = T0 + S.total; S.t0 = T0;
+    const lg = n => .55 / Math.sqrt(n);
+    const span = x => Math.max(.05, Math.min(x.ramp, x.end - x.start));
+    let first = null;
+
+    for (let k = 0; k < MAXL; k++) {
+      if (!tl.some(x => x.layers[k])) continue;
+      const oL = ac.createOscillator(), oR = ac.createOscillator(), gL = ac.createGain(), gR = ac.createGain();
+      oL.connect(gL); oR.connect(gR); gL.connect(merger, 0, 0); gR.connect(merger, 0, 1);
+      gL.gain.value = 0; gR.gain.value = 0;
+      tl.forEach((x, i) => {
+        const l = x.layers[k], p = i ? tl[i - 1].layers[k] : null;
+        const Ti = T0 + x.start, Te = Ti + span(x);
+        if (l && p) {
+          oL.frequency.setValueAtTime(p.c, Ti); oL.frequency.linearRampToValueAtTime(l.c, Te);
+          oR.frequency.setValueAtTime(p.c + p.b, Ti); oR.frequency.linearRampToValueAtTime(l.c + l.b, Te);
+        } else if (l) {
+          oL.frequency.setValueAtTime(l.c, Ti); oR.frequency.setValueAtTime(l.c + l.b, Ti);
+        }
+        const g = l ? lg(x.layers.length) : 0, pg = p ? lg(tl[i - 1].layers.length) : 0;
+        [gL, gR].forEach(n => { n.gain.setValueAtTime(pg, Ti); n.gain.linearRampToValueAtTime(g, Te); });
+      });
+      oL.start(T0); oR.start(T0); oL.stop(END + .3); oR.stop(END + .3);
+      first = first || oL;
+    }
+
+    [...new Set(tl.map(x => x.noise).filter(n => n !== 'off'))].forEach(type => {
+      const g = ac.createGain(); g.gain.value = 0; g.connect(env);
+      const src = ac.createBufferSource(); src.buffer = makeNoise(type === 'surf' ? 'pink' : type, ac); src.loop = true;
+      if (type === 'surf') {
+        // Pink noise, low-passed, swelling like waves on two slow cycles.
+        const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 850;
+        const m = ac.createGain(); m.gain.value = .55;
+        const w1 = ac.createOscillator(), d1 = ac.createGain(); w1.frequency.value = .075; d1.gain.value = .35;
+        const w2 = ac.createOscillator(), d2 = ac.createGain(); w2.frequency.value = .031; d2.gain.value = .12;
+        const d3 = ac.createGain(); d3.gain.value = 350;
+        w1.connect(d1); d1.connect(m.gain); w2.connect(d2); d2.connect(m.gain); w1.connect(d3); d3.connect(f.frequency);
+        src.connect(f); f.connect(m); m.connect(g);
+        [w1, w2].forEach(o => { o.start(T0); o.stop(END + .3); });
+      } else src.connect(g);
+      tl.forEach((x, i) => {
+        const Ti = T0 + x.start, Te = Ti + Math.max(2, span(x));
+        const prev = i && tl[i - 1].noise === type ? tl[i - 1].nl : 0, tgt = x.noise === type ? x.nl : 0;
+        g.gain.setValueAtTime(prev, Ti); g.gain.linearRampToValueAtTime(tgt, Math.min(Te, END));
+      });
+      src.start(T0); src.stop(END + .3);
+    });
+
+    const fin = Math.min(8, S.total / 4), fout = Math.min(15, S.total / 4);
+    env.gain.setValueAtTime(0, T0); env.gain.linearRampToValueAtTime(1, T0 + fin);
+    env.gain.setValueAtTime(1, END - fout); env.gain.linearRampToValueAtTime(0, END);
+    if (first) first.onended = () => { if (S.ac === ac) finishSession(); };
+
+    requestWake();
+    openPlayer();
+    sessMedia();
+  }
+
+  function stopSession() {
+    if (!S.ac) return;
+    const ac = S.ac; S.ac = null;
+    try { S.vol.gain.setTargetAtTime(0, ac.currentTime, .03); } catch {}
+    setTimeout(() => { try { ac.close(); } catch {} }, 250);
+    if (!st.playing) { try { keepAlive && keepAlive.pause(); } catch {} }
+    releaseWake();
+  }
+  function finishSession() { stopSession(); S.done = true; renderPlayer(); }
+  function sessToggle() {
+    if (!S.ac) { if (S.sess) startSession(S.sess); return; }
+    if (S.ac.state === 'running') {
+      S.ac.suspend(); try { keepAlive && keepAlive.pause(); } catch {} releaseWake();
+    } else {
+      S.ac.resume(); try { keepAlive && keepAlive.play().catch(() => {}); } catch {} requestWake();
+    }
+    setTimeout(renderPlayer, 80);
+  }
+  async function requestWake() {
+    try { if ('wakeLock' in navigator && !S.wake) { const w = await navigator.wakeLock.request('screen'); S.wake = w; w.addEventListener('release', () => { if (S.wake === w) S.wake = null; }); } } catch {}
+  }
+  function releaseWake() { const w = S.wake; S.wake = null; try { w && w.release(); } catch {} }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.ac && S.ac.state === 'running') requestWake(); });
+  function sessMedia() {
+    if (!('mediaSession' in navigator) || !S.sess) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: S.sess.name, artist: 'TwinTone session', album: 'TwinTone' });
+      navigator.mediaSession.playbackState = 'playing';
+      navigator.mediaSession.setActionHandler('play', () => { if (S.ac && S.ac.state !== 'running') sessToggle(); });
+      navigator.mediaSession.setActionHandler('pause', () => { if (S.ac && S.ac.state === 'running') sessToggle(); });
+    } catch {}
+  }
+
+  /* ---------- sessions: player ---------- */
+  const REPLAY = '<path d="M4.5 12a7.5 7.5 0 1 0 2.3-5.4M4.5 4v4.6h4.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+  function openPlayer() {
+    $('plName').textContent = S.sess.name;
+    $('plTl').innerHTML = tlSVG(S.sess, 100, { guides: true, progress: true, w: 2.5 });
+    $('plVol').value = Math.round(st.master * 100); paintRange($('plVol'));
+    $('player').hidden = false;
+    renderPlayer();
+    if (!S.raf) S.raf = requestAnimationFrame(playerLoop);
+  }
+  function closePlayer() { stopSession(); S.sess = null; S.done = false; $('player').hidden = true; mediaSession(); }
+  const elapsed = () => S.ac ? Math.min(S.total, Math.max(0, S.ac.currentTime - S.t0)) : (S.done ? S.total : 0);
+  function renderPlayer() {
+    if (!S.sess) return;
+    const t = elapsed(), v = valuesAt(S.tl, Math.min(t, S.total - .001)), x = S.tl[v.i];
+    const running = !!S.ac && S.ac.state === 'running';
+    $('plStage').textContent = S.done ? 'Session complete' : `Stage ${v.i + 1} of ${S.tl.length} · ${x.name}${running ? '' : ' · Paused'}`;
+    $('plBeat').textContent = one(v.layers[0].b);
+    $('plBand').textContent = band(v.layers[0].b);
+    $('plLayers').innerHTML = v.layers.map((l, k) =>
+      `<div class="pl-layer"><i style="background:${LAYER_COLORS[k]}"></i><span>L ${one(l.c)} · R ${one(l.c + l.b)} Hz</span><span>${one(l.b)} Hz ${band(l.b)}</span></div>`).join('')
+      + (x.noise !== 'off' ? `<div class="pl-layer"><i style="background:var(--muted)"></i><span>${SESS_NOISE[x.noise]}</span><span>${Math.round(x.nl * 100)}%</span></div>` : '');
+    const p = (t / S.total * 1000).toFixed(1), pr = document.getElementById('tlProg'), ln = document.getElementById('tlLine');
+    if (pr) pr.setAttribute('width', p);
+    if (ln) { ln.setAttribute('x1', p); ln.setAttribute('x2', p); }
+    $('plEl').textContent = clock(Math.floor(t));
+    $('plRem').textContent = '−' + clock(S.total - Math.floor(t));
+    $('plPlayIcon').innerHTML = S.done ? REPLAY : running ? PAUSE : PLAY;
+    $('plPlay').setAttribute('aria-label', S.done ? 'Play again' : running ? 'Pause' : 'Play');
+    $('plPlay').classList.toggle('on', running);
+  }
+  let lastPl = 0;
+  function playerLoop(now) {
+    S.raf = 0;
+    if ($('player').hidden) return;
+    if (now - lastPl > 200) { lastPl = now; renderPlayer(); }
+    S.raf = requestAnimationFrame(playerLoop);
+  }
+  $('plPlay').addEventListener('click', sessToggle);
+  $('plClose').addEventListener('click', closePlayer);
+  $('plVol').addEventListener('input', e => {
+    st.master = e.target.value / 100; paintRange(e.target);
+    $('master').value = e.target.value; paintRange($('master'));
+    if (S.ac && S.vol) S.vol.gain.setTargetAtTime(st.master * st.master, S.ac.currentTime, .03);
+    persist();
+  });
+
+  /* ---------- sessions: library, sharing ---------- */
+  const PLAY_SM = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>';
+  function renderQuick() {
+    const list = [['b0', BUILTIN_SESS[0]], ['b2', BUILTIN_SESS[2]]];
+    if (mySess.length) list.unshift(['c' + (mySess.length - 1), mySess[mySess.length - 1]]);
+    $('sessQuick').innerHTML = list.slice(0, 3).map(([r, s]) =>
+      `<div class="sq"><button class="pbtn" data-qp="${r}" aria-label="Play ${esc(s.name)}">${PLAY_SM}</button>
+        <div class="meta"><span class="t">${esc(s.name)}</span><span class="s">${sessMeta(s)}</span>${tlSVG(s, 22, { cls: 'mini' })}</div></div>`).join('');
+    $('sessQuick').querySelectorAll('[data-qp]').forEach(b => b.addEventListener('click', () => startSession(pick(b.dataset.qp))));
+  }
+  function sessRow(s, src, i) {
+    return `<div class="sess-row">
+      <span class="t">${esc(s.name)}</span><span class="s">${sessMeta(s)}</span>
+      ${tlSVG(s, 28, { cls: 'mini' })}
+      <div class="sess-actions">
+        <button class="chipbtn primary" data-sp="${src}${i}">Play</button>
+        <button class="chipbtn" data-se="${src}${i}">${src === 'b' ? 'Customize' : 'Edit'}</button>
+        <button class="chipbtn" data-ss="${src}${i}">Share</button>
+        ${src === 'c' ? `<button class="chipbtn warn" data-sd="${i}">Delete</button>` : ''}
+      </div></div>`;
+  }
+  function openSessions(msg) {
+    openSheet('sessions', `
+      <div class="sheet-head"><button data-close>Close</button><h2>Sessions</h2><button id="newSess">New</button></div>
+      ${msg ? `<p class="toast">${msg}</p>` : ''}
+      <div class="label list-label">Your sessions</div>
+      <div class="list">${mySess.length ? mySess.map((s, i) => sessRow(s, 'c', i)).join('') : '<div class="empty">Tap New to build a session, or import a code someone shared with you.</div>'}</div>
+      <div class="label list-label">Built in</div>
+      <div class="list">${BUILTIN_SESS.map((s, i) => sessRow(s, 'b', i)).join('')}</div>
+      <div class="label list-label">Import a shared session</div>
+      <form id="impForm"><textarea class="txt" id="impCode" rows="3" placeholder="Paste a code that starts with TT1-" aria-label="Session code"></textarea>
+        <p class="err" id="impErr" hidden></p>
+        <button class="btn" type="submit" style="width:100%;margin-top:10px;min-height:46px">Import session</button></form>`);
+    const sh = $('sheet');
+    sh.querySelector('[data-close]').onclick = closeSheet;
+    $('newSess').onclick = () => openEditor(newDraft(), null);
+    sh.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => startSession(pick(b.dataset.sp)));
+    sh.querySelectorAll('[data-se]').forEach(b => b.onclick = () => {
+      const r = b.dataset.se, d = clone(pick(r));
+      if (r[0] === 'b') { d.name = ('My ' + d.name).slice(0, 40); openEditor(d, null); } else openEditor(d, +r.slice(1));
+    });
+    sh.querySelectorAll('[data-ss]').forEach(b => b.onclick = () => openShare(pick(b.dataset.ss)));
+    sh.querySelectorAll('[data-sd]').forEach(b => b.onclick = () => {
+      if (b.dataset.arm) { mySess.splice(+b.dataset.sd, 1); saveSess(); openSessions('Session deleted.'); }
+      else { b.dataset.arm = '1'; b.textContent = 'Tap again to delete'; }
+    });
+    $('impForm').onsubmit = e => {
+      e.preventDefault();
+      const s = decodeSess($('impCode').value);
+      if (!s) { $('impErr').hidden = false; $('impErr').textContent = "That code didn't work. Make sure you copied all of it, starting with TT1-."; return; }
+      mySess.push(s); saveSess(); openSessions(`Imported “${esc(s.name)}”.`);
+    };
+  }
+  function openShare(s) {
+    const code = encodeSess(s);
+    openSheet('share', `
+      <div class="sheet-head"><button data-back>Back</button><h2>Share session</h2><span style="min-width:60px"></span></div>
+      <div class="preview" style="margin-top:4px"><span class="t">${esc(s.name)}</span><span class="s" style="margin-bottom:8px">${sessMeta(s)}</span>${tlSVG(s, 70, { guides: true })}</div>
+      <p class="hint" style="font-size:14px;margin:12px 2px">Send this code to anyone with TwinTone. They open Sessions, paste it under Import, and get the same session.</p>
+      <textarea class="txt" id="shareCode" rows="5" readonly aria-label="Session code">${code}</textarea>
+      <button class="btn" id="copyCode" style="width:100%;margin-top:10px;min-height:48px">Copy code</button>`);
+    $('sheet').querySelector('[data-back]').onclick = () => openSessions();
+    $('copyCode').onclick = () => {
+      const btn = $('copyCode'), ta = $('shareCode');
+      const fallback = () => { ta.focus(); ta.select(); btn.textContent = 'Code selected. Copy it from the menu.'; };
+      try { navigator.clipboard.writeText(code).then(() => { btn.textContent = 'Copied'; }, fallback); } catch { fallback(); }
+    };
+  }
+
+  /* ---------- sessions: editor ---------- */
+  let draft = null, draftIdx = null;
+  const newDraft = () => ({ name: '', stages: [
+    { name: 'Settle in', min: 5, ramp: 0, noise: 'surf', nl: .45, layers: [{ c: 200, b: 10 }] },
+    { name: 'Go deeper', min: 15, ramp: 180, noise: 'surf', nl: .35, layers: [{ c: 200, b: 4 }, { c: 100, b: 4 }] }] });
+  const RAMPS = [[0, 'Instant'], [30, '30 sec'], [60, '1 min'], [120, '2 min'], [180, '3 min'], [300, '5 min'], [600, '10 min']];
+  const SVGI = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const ICON = {
+    up: SVGI('<path d="M6 14l6-6 6 6"/>'), down: SVGI('<path d="M6 10l6 6 6-6"/>'),
+    dup: SVGI('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>'),
+    del: SVGI('<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13"/>'), x: SVGI('<path d="M7 7l10 10M17 7L7 17"/>')
+  };
+  function stageHTML(x, i, n) {
+    const ramps = RAMPS.some(r => r[0] === x.ramp) ? RAMPS : RAMPS.concat([[x.ramp, `${x.ramp} sec`]]);
+    return `<div class="stage" data-i="${i}">
+      <div class="stage-top"><span class="stage-num">${i + 1}</span>
+        <input data-f="name" value="${esc(x.name)}" maxlength="30" aria-label="Stage ${i + 1} name">
+        <div class="tools">
+          <button data-act="up" ${i === 0 ? 'disabled' : ''} aria-label="Move stage up">${ICON.up}</button>
+          <button data-act="down" ${i === n - 1 ? 'disabled' : ''} aria-label="Move stage down">${ICON.down}</button>
+          <button data-act="dup" ${n >= 20 ? 'disabled' : ''} aria-label="Duplicate stage">${ICON.dup}</button>
+          <button data-act="del" ${n === 1 ? 'disabled' : ''} aria-label="Delete stage">${ICON.del}</button>
+        </div></div>
+      <div class="fields">
+        <label class="field">Length (min)<input class="numin" data-f="min" type="number" inputmode="numeric" min="1" max="180" value="${x.min}"></label>
+        ${i === 0 ? '<div class="field">Blend<span class="numin static">Fades in to start</span></div>'
+          : `<label class="field">Blend from last stage<select class="numin" data-f="ramp">${ramps.map(([v, l]) => `<option value="${v}" ${v === x.ramp ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`}
+      </div>
+      <div class="label">Tones</div>
+      ${x.layers.map((l, k) => `<div class="layer" data-k="${k}"><span class="sw" style="background:${LAYER_COLORS[k]}"></span>
+        <label class="field">Carrier Hz<input class="numin" data-f="c" type="number" inputmode="decimal" step="any" min="20" max="1500" value="${l.c}"></label>
+        <label class="field">Beat Hz<input class="numin" data-f="b" type="number" inputmode="decimal" step="any" min="0" max="40" value="${l.b}"></label>
+        <span class="lband">${band(l.b)}</span>
+        <button class="lx" data-act="dellayer" ${x.layers.length === 1 ? 'disabled' : ''} aria-label="Remove tone layer">${ICON.x}</button></div>`).join('')}
+      ${x.layers.length < MAXL ? '<button class="add" data-act="addlayer">+ Add tone layer</button>' : ''}
+      <div class="label">Background</div>
+      <div class="fields">
+        <select class="numin" data-f="noise" aria-label="Background sound">${Object.entries(SESS_NOISE).map(([k, l]) => `<option value="${k}" ${k === x.noise ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        <input type="range" data-f="nl" min="0" max="100" value="${Math.round(x.nl * 100)}" aria-label="Background level" style="--c: var(--muted)" ${x.noise === 'off' ? 'disabled' : ''}>
+      </div></div>`;
+  }
+  function openEditor(d, idx) {
+    draft = d; draftIdx = idx;
+    openSheet('editor', `
+      <div class="sheet-head"><button data-act="cancel">Cancel</button><h2>${idx == null ? 'New session' : 'Edit session'}</h2><button data-act="save">Save</button></div>
+      <label class="field" style="margin-top:6px">Session name<input class="txt" id="edName" data-f="sname" maxlength="40" placeholder="Evening theta" value="${esc(d.name)}"></label>
+      <p class="err" id="edErr" hidden></p>
+      <div class="preview"><div id="edTl"></div><div class="row hint" style="margin-top:6px"><span id="edTotal"></span><span>Beat over time</span></div></div>
+      <div id="edStages"></div>
+      <button class="add" data-act="addstage" style="margin-top:12px">+ Add stage</button>
+      <div class="ed-foot"><button class="btn-sec" data-act="test">Play</button><button class="btn" data-act="save">Save session</button></div>`);
+    renderStages();
+  }
+  function renderStages() {
+    $('edStages').innerHTML = draft.stages.map((x, i) => stageHTML(x, i, draft.stages.length)).join('');
+    $('edStages').querySelectorAll('input[type=range]').forEach(paintRange);
+    renderEdPreview();
+  }
+  function renderEdPreview() {
+    const s = normSess(draft);
+    $('edTl').innerHTML = s ? tlSVG(s, 70, { guides: true }) : '';
+    $('edTotal').textContent = s ? sessMeta(s).replace(/ · [^·]+Hz beat$/, '') : '';
+  }
+  function saveDraft() {
+    if (!String(draft.name).trim()) { $('edErr').hidden = false; $('edErr').textContent = 'Give your session a name.'; $('edName').focus(); return; }
+    const s = normSess(draft);
+    if (draftIdx == null) mySess.push(s); else mySess[draftIdx] = s;
+    saveSess(); openSessions(`Saved “${esc(s.name)}”.`);
+  }
+  $('sheet').addEventListener('input', e => {
+    if (sheetKind !== 'editor') return;
+    const el = e.target, f = el.dataset.f; if (!f) return;
+    if (f === 'sname') { draft.name = el.value; if (el.value.trim()) $('edErr').hidden = true; return; }
+    const si = el.closest('[data-i]'); if (!si) return;
+    const x = draft.stages[+si.dataset.i], lk = el.closest('[data-k]');
+    if (lk) {
+      const v = parseFloat(el.value); if (!isNaN(v)) x.layers[+lk.dataset.k][f] = v;
+      if (f === 'b') lk.querySelector('.lband').textContent = band(isNaN(v) ? 0 : v);
+    }
+    else if (f === 'name') x.name = el.value;
+    else if (f === 'min') { const v = parseFloat(el.value); if (!isNaN(v)) x.min = v; }
+    else if (f === 'ramp') x.ramp = +el.value;
+    else if (f === 'noise') { x.noise = el.value; si.querySelector('[data-f="nl"]').disabled = x.noise === 'off'; }
+    else if (f === 'nl') { x.nl = el.value / 100; paintRange(el); }
+    renderEdPreview();
+  });
+  $('sheet').addEventListener('change', e => {
+    if (sheetKind !== 'editor') return;
+    const el = e.target, f = el.dataset.f; if (!['min', 'c', 'b'].includes(f)) return;
+    const x = draft.stages[+el.closest('[data-i]').dataset.i];
+    if (f === 'min') { x.min = Math.round(num(el.value, 1, 180, 5)); el.value = x.min; }
+    else {
+      const l = x.layers[+el.closest('[data-k]').dataset.k];
+      l[f] = r2(f === 'c' ? num(el.value, 20, 1500, 200) : num(el.value, 0, 40, 4)); el.value = l[f];
+    }
+    renderEdPreview();
+  });
+  $('sheet').addEventListener('click', e => {
+    if (sheetKind !== 'editor') return;
+    const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+    const si = b.closest('[data-i]'), i = si ? +si.dataset.i : -1, ss = draft.stages;
+    switch (b.dataset.act) {
+      case 'cancel': openSessions(); return;
+      case 'save': saveDraft(); return;
+      case 'test': { const s = normSess(draft); if (s) startSession(s); return; }
+      case 'addstage': { const n = clone(ss[ss.length - 1]); n.name = `Stage ${ss.length + 1}`; n.ramp = n.ramp || 60; ss.push(n); break; }
+      case 'up': [ss[i - 1], ss[i]] = [ss[i], ss[i - 1]]; break;
+      case 'down': [ss[i + 1], ss[i]] = [ss[i], ss[i + 1]]; break;
+      case 'dup': ss.splice(i + 1, 0, clone(ss[i])); break;
+      case 'del': ss.splice(i, 1); break;
+      case 'addlayer': { const ls = ss[i].layers, l = ls[ls.length - 1]; ls.push({ c: Math.min(1500, r2(l.c + 100)), b: l.b }); break; }
+      case 'dellayer': ss[i].layers.splice(+b.closest('[data-k]').dataset.k, 1); break;
+      default: return;
+    }
+    const y = $('sheet').scrollTop; renderStages(); $('sheet').scrollTop = y;
+  });
+
   /* ---------- wire up ---------- */
+  $('sessBrowse').addEventListener('click', () => openSessions());
+  $('sessCreate').addEventListener('click', () => openEditor(newDraft(), null));
+  renderQuick();
   $('chips').innerHTML = QUICK.map(([n, v]) => `<button class="chip" data-v="${v}" aria-pressed="false" aria-label="${n} ${v} hertz"><b>${fmt(v)}</b><small>${n}</small></button>`).join('');
   document.querySelectorAll('#chips .chip').forEach(c => c.addEventListener('click', () => setBeat(+c.dataset.v)));
   $('beatSlider').addEventListener('input', e => setBeat(+e.target.value));
