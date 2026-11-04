@@ -241,6 +241,22 @@ input[type=range]:disabled { opacity: .35; }
 .pl-play { width: 84px; height: 84px; border-radius: 50%; background: var(--text); color: var(--bg); display: grid; place-items: center; }
 .pl-play.on { background: var(--right); }
 .pl-play svg { width: 32px; height: 32px; }
+.tone-chips { margin-top: 10px; }
+.chip.tone { min-width: 70px; }
+.linkbtn { color: var(--left); font-weight: 700; font-size: 14px; padding: 10px 0 2px; display: inline-flex; align-items: center; gap: 6px; }
+.linkbtn svg { width: 16px; height: 16px; }
+.guide p { margin: 0; padding: 12px 14px; font-size: 14px; }
+.guide p + p { padding-top: 0; }
+.g-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-top: 1px solid var(--line); }
+.g-row:first-child { border-top: 0; }
+.g-hz { flex: none; width: 64px; font-family: var(--round); font-weight: 800; font-size: 18px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.g-hz small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); }
+.g-txt { flex: 1; min-width: 0; }
+.g-txt b { display: block; font-size: 14.5px; }
+.g-txt span { display: block; color: var(--muted); font-size: 13px; }
+.g-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .04em; color: var(--left); margin-bottom: 1px; }
+.g-row .chipbtn { flex: none; }
+.g-note { background: var(--raised); border-radius: 12px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .sheet { animation: none; } * { transition: none !important; } }
 </style>
 
@@ -278,6 +294,8 @@ input[type=range]:disabled { opacity: .35; }
     <div class="row"><span class="label">Carrier tone</span><span class="num" style="font-weight:700" id="carrierVal">200 Hz</span></div>
     <input type="range" id="carrier" min="0" max="1000" step="1" aria-label="Carrier tone" style="--c: var(--muted)">
     <p class="hint">Moves both ears together and keeps the beat.</p>
+    <div class="chips tone-chips" id="toneChips" aria-label="Popular tones"></div>
+    <button class="linkbtn" id="guideBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg>Frequency guide: what the numbers mean</button>
   </section>
 
   <section class="card" aria-label="Sessions">
@@ -534,6 +552,7 @@ input[type=range]:disabled { opacity: .35; }
     const c = Math.min(CMAX, Math.max(CMIN, st.L.f));
     $('carrier').value = Math.round(1000 * Math.log(c / CMIN) / Math.log(CMAX / CMIN)); paintRange($('carrier'));
     document.querySelectorAll('#chips .chip').forEach(el => el.setAttribute('aria-pressed', Math.abs(b - +el.dataset.v) < .01));
+    if (typeof markToneChips === 'function' && document.getElementById('toneChips').children.length) markToneChips();
     ['L','R'].forEach(ch => { const inp = $('freq' + ch); if (inp && document.activeElement !== inp) inp.value = fmt(st[ch].f).replace(/,/g, ''); });
     if (st.playing) mediaSession();
   }
@@ -701,6 +720,80 @@ input[type=range]:disabled { opacity: .35; }
         <div class="list"><p>On iPhone, a web page usually stops sound when the screen locks or you switch apps. Keep TwinTone open for long sessions. The App Store version will keep playing with the screen locked.</p></div>
       </div>`);
     $('sheet').querySelector('[data-close]').onclick = closeSheet;
+  }
+
+  /* ---------- frequency guide ---------- */
+  // Carrier tones people look for by name. Meanings are popular traditions, not proven effects.
+  const TONES = [
+    { hz: 432, name: '432 Hz', tag: 'Golden frequency', note: 'An alternative to standard 440 Hz tuning. Fans call it the "golden" or natural frequency and hear it as warmer and calmer.', quick: 'Golden' },
+    { hz: 528, name: '528 Hz', tag: 'Solfeggio · Mi', note: 'The best-known solfeggio tone, often called the "love" or "miracle" frequency.', quick: 'Solfeggio' },
+    { hz: 963, name: '963 Hz', tag: 'Solfeggio · Si', note: 'The highest of the nine common solfeggio tones. Linked in sound-healing circles with the crown chakra and a sense of oneness.', quick: 'Solfeggio' },
+    { hz: 174, name: '174 Hz', tag: 'Solfeggio', note: 'The lowest common solfeggio tone. Used in grounding, calming tracks.' },
+    { hz: 285, name: '285 Hz', tag: 'Solfeggio', note: 'Associated with restoring and renewal.' },
+    { hz: 396, name: '396 Hz', tag: 'Solfeggio · Ut', note: 'Associated with letting go of fear and guilt.', quick: 'Solfeggio' },
+    { hz: 417, name: '417 Hz', tag: 'Solfeggio · Re', note: 'Associated with change and clearing the past.' },
+    { hz: 639, name: '639 Hz', tag: 'Solfeggio · Fa', note: 'Associated with relationships and harmony.' },
+    { hz: 741, name: '741 Hz', tag: 'Solfeggio · Sol', note: 'Associated with clarity and self-expression.' },
+    { hz: 852, name: '852 Hz', tag: 'Solfeggio · La', note: 'Associated with intuition and awareness.' },
+    { hz: 440, name: '440 Hz', tag: 'Standard tuning', note: 'The A that most modern music is tuned to. Useful to compare against 432 Hz.' }
+  ];
+  const PHI = 1.618;
+  const GOLDEN_PAIR = { l: 144, r: 233 };
+  const BEATS = [
+    { b: 2.5, name: 'Delta', range: 'below 4 Hz', note: 'The slowest waves, seen in deep, dreamless sleep.' },
+    { b: 6, name: 'Theta', range: '4 to 8 Hz', note: 'Drowsiness, daydreaming and deep meditation.' },
+    { b: 10, name: 'Alpha', range: '8 to 13 Hz', note: 'Relaxed but awake, like resting with your eyes closed.' },
+    { b: 18, name: 'Beta', range: '13 to 30 Hz', note: 'Normal alert thinking and focus.' },
+    { b: 40, name: 'Gamma', range: '30 to 45 Hz', note: 'Fast activity tied to attention. 40 Hz is the most studied gamma rate.' },
+    { b: 7.83, name: 'Schumann resonance', range: '7.83 Hz', note: "The natural resonance of the space between Earth's surface and the upper atmosphere. A popular beat in meditation tracks." }
+  ];
+  function renderToneChips() {
+    const quick = TONES.filter(t => t.quick);
+    $('toneChips').innerHTML = quick.map(t => `<button class="chip tone" data-tone="${t.hz}" aria-pressed="false" aria-label="${t.hz} hertz, ${t.tag}"><b>${t.hz}</b><small>${t.quick}</small></button>`).join('')
+      + `<button class="chip tone" data-golden="1" aria-pressed="false" aria-label="Golden ratio pair, 144 and 233 hertz"><b>φ</b><small>Golden ratio</small></button>`;
+    $('toneChips').querySelectorAll('[data-tone]').forEach(b => b.addEventListener('click', () => setCarrier(+b.dataset.tone)));
+    $('toneChips').querySelector('[data-golden]').addEventListener('click', useGolden);
+  }
+  function useGolden() { setFreq('L', GOLDEN_PAIR.l); setFreq('R', GOLDEN_PAIR.r); }
+  function markToneChips() {
+    document.querySelectorAll('#toneChips [data-tone]').forEach(b => b.setAttribute('aria-pressed', Math.abs(st.L.f - +b.dataset.tone) < .01));
+    const g = document.querySelector('#toneChips [data-golden]');
+    if (g) g.setAttribute('aria-pressed', st.L.f === GOLDEN_PAIR.l && st.R.f === GOLDEN_PAIR.r);
+  }
+  function openGuide() {
+    const b = Math.abs(beat()), ex = st.L.f;
+    openSheet('guide', `
+      <div class="sheet-head"><button data-close>Close</button><h2>Frequency guide</h2><span style="min-width:60px"></span></div>
+      <div class="guide">
+        <div class="label list-label">How the two numbers work</div>
+        <div class="list">
+          <p><b>Carrier tone</b> is the pitch you actually hear, like 432 Hz. It sets the color of the sound: low numbers hum, high numbers ring.</p>
+          <p><b>Beat</b> is the difference between your ears. Left ${fmt(ex)} Hz and right ${fmt(ex + 4)} Hz make a 4 Hz beat. Your brain hears that gap as a slow pulse, even though neither ear plays it.</p>
+          <p>Right now you're playing L ${fmt(st.L.f)} · R ${fmt(st.R.f)} Hz, a ${fmt(b)} Hz ${band(b).toLowerCase()} beat. The beat is easiest to hear with carriers between about 100 and 500 Hz and fades above 1,000 Hz.</p>
+        </div>
+
+        <div class="label list-label">Beats · tap to set</div>
+        <div class="list">${BEATS.map(x => `<div class="g-row"><div class="g-hz">${fmt(x.b)}<small>Hz beat</small></div>
+          <div class="g-txt"><b>${x.name} <span style="display:inline;font-weight:600">· ${x.range}</span></b><span>${x.note}</span></div>
+          <button class="chipbtn" data-gb="${x.b}">Use</button></div>`).join('')}</div>
+
+        <div class="label list-label">Popular tones · sets the carrier, keeps your beat</div>
+        <div class="list">${TONES.map(t => `<div class="g-row"><div class="g-hz">${t.hz}<small>Hz</small></div>
+          <div class="g-txt"><span class="g-tag">${t.tag.toUpperCase()}</span><span>${t.note}</span></div>
+          <button class="chipbtn" data-gt="${t.hz}">Use</button></div>`).join('')}
+          <div class="g-row"><div class="g-hz">φ<small>1.618</small></div>
+          <div class="g-txt"><span class="g-tag">GOLDEN RATIO</span><span>Fibonacci tones (89, 144, 233, 377 Hz) each sit about ${PHI} times above the last. This plays 144 Hz left and 233 Hz right as a golden-ratio pair. It's a chord, not a beat.</span></div>
+          <button class="chipbtn" data-gg="1">Use</button></div>
+        </div>
+
+        <div class="label list-label">About these names</div>
+        <div class="list g-note"><p>The solfeggio list, 432 Hz and golden-ratio tones come from music tuning history and modern sound-healing traditions. Their meanings aren't scientifically proven. Pick the ones that sound good to you.</p></div>
+      </div>`);
+    const sh = $('sheet');
+    sh.querySelector('[data-close]').onclick = closeSheet;
+    sh.querySelectorAll('[data-gb]').forEach(x => x.onclick = () => { setBeat(+x.dataset.gb); closeSheet(); });
+    sh.querySelectorAll('[data-gt]').forEach(x => x.onclick = () => { setCarrier(+x.dataset.gt); closeSheet(); });
+    sh.querySelector('[data-gg]').onclick = () => { useGolden(); closeSheet(); };
   }
 
   /* ---------- sessions: data ---------- */
@@ -1051,7 +1144,7 @@ input[type=range]:disabled { opacity: .35; }
       </div>
       <div class="label">Tones</div>
       ${x.layers.map((l, k) => `<div class="layer" data-k="${k}"><span class="sw" style="background:${LAYER_COLORS[k]}"></span>
-        <label class="field">Carrier Hz<input class="numin" data-f="c" type="number" inputmode="decimal" step="any" min="20" max="1500" value="${l.c}"></label>
+        <label class="field">Carrier Hz<input class="numin" data-f="c" list="toneList" type="number" inputmode="decimal" step="any" min="20" max="1500" value="${l.c}"></label>
         <label class="field">Beat Hz<input class="numin" data-f="b" type="number" inputmode="decimal" step="any" min="0" max="40" value="${l.b}"></label>
         <span class="lband">${band(l.b)}</span>
         <button class="lx" data-act="dellayer" ${x.layers.length === 1 ? 'disabled' : ''} aria-label="Remove tone layer">${ICON.x}</button></div>`).join('')}
@@ -1156,6 +1249,9 @@ input[type=range]:disabled { opacity: .35; }
   $('presetsBtn').addEventListener('click', openPresets);
   $('timerBtn').addEventListener('click', openTimer);
   $('aboutBtn').addEventListener('click', openAbout);
+  $('guideBtn').addEventListener('click', openGuide);
+  renderToneChips();
+  document.body.insertAdjacentHTML('beforeend', `<datalist id="toneList">${TONES.map(t => `<option value="${t.hz}">${t.tag}</option>`).join('')}<option value="144">Golden ratio</option><option value="233">Golden ratio</option></datalist>`);
   $('startBtn').addEventListener('click', () => { store.set('twintone.onboarded', true); $('onboard').hidden = true; });
   if (!store.get('twintone.onboarded', false)) $('onboard').hidden = false;
 
