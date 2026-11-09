@@ -257,6 +257,24 @@ input[type=range]:disabled { opacity: .35; }
 .g-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .04em; color: var(--left); margin-bottom: 1px; }
 .g-row .chipbtn { flex: none; }
 .g-note { background: var(--raised); border-radius: 12px; color: var(--muted); }
+.big-in { font-family: var(--round); font-variant-numeric: tabular-nums; font-size: 46px; font-weight: 800; line-height: 1.05; color: var(--text); background: none; border: 0; border-bottom: 2px dashed var(--line); padding: 0; width: 4.2ch; min-width: 0; outline: none; }
+.big-in:focus { border-bottom: 2px solid var(--text); }
+.c-in { font-family: var(--round); font-variant-numeric: tabular-nums; font-size: 16px; font-weight: 700; color: var(--text); background: var(--raised); border: 0; border-radius: 8px; padding: 6px 8px; width: 7.5ch; text-align: right; outline: none; }
+.c-in:focus { box-shadow: 0 0 0 2px var(--muted); }
+.c-unit { color: var(--muted); font-weight: 700; margin-left: 4px; }
+.nudge.tight { margin-top: 2px; }
+.file-btn { position: relative; display: flex; align-items: center; justify-content: center; min-height: 46px; cursor: pointer; overflow: hidden; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 16px; }
+.mus-name { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin: 10px 0 4px; }
+.mus-name b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mus-name span { color: var(--muted); font-weight: 700; flex: none; }
+.seg.seg2 { grid-template-columns: repeat(2, 1fr); margin: 8px 0; }
+.seg.seg5 { grid-template-columns: repeat(5, 1fr); margin-top: 0; }
+.seg button:disabled { opacity: .4; cursor: default; }
+.xprog { padding: 18px 2px 6px; display: flex; flex-direction: column; gap: 10px; }
+.xprog b { font-size: 44px; font-weight: 800; }
+.xbar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.xbar i { display: block; height: 100%; width: 0; background: var(--left); }
 @media (prefers-reduced-motion: reduce) { .sheet { animation: none; } * { transition: none !important; } }
 </style>
 
@@ -287,12 +305,14 @@ input[type=range]:disabled { opacity: .35; }
 
   <section class="card" aria-label="Beat">
     <div class="row"><span class="label">Beat</span><span class="band" id="band">Theta</span></div>
-    <div class="big num"><b id="beatBig">4</b><span>Hz</span></div>
+    <label class="big num"><input class="big-in" id="beatIn" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" aria-label="Beat in hertz, tap to type"><span>Hz</span></label>
+    <div class="nudge tight" id="beatNudge"><button data-bd="-1">−1</button><button data-bd="-0.1">−.1</button><button data-bd="0.1">+.1</button><button data-bd="1">+1</button></div>
     <input type="range" id="beatSlider" min="0" max="40" step="0.5" aria-label="Beat frequency">
     <div class="chips" id="chips"></div>
     <hr>
-    <div class="row"><span class="label">Carrier tone</span><span class="num" style="font-weight:700" id="carrierVal">200 Hz</span></div>
+    <div class="row"><span class="label">Carrier tone</span><label><input class="c-in" id="carrierIn" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" aria-label="Carrier tone in hertz, tap to type"><span class="c-unit">Hz</span></label></div>
     <input type="range" id="carrier" min="0" max="1000" step="1" aria-label="Carrier tone" style="--c: var(--muted)">
+    <div class="nudge" id="carrierNudge"><button data-cd="-10">−10</button><button data-cd="-1">−1</button><button data-cd="1">+1</button><button data-cd="10">+10</button></div>
     <p class="hint">Moves both ears together and keeps the beat.</p>
     <div class="chips tone-chips" id="toneChips" aria-label="Popular tones"></div>
     <button class="linkbtn" id="guideBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg>Frequency guide: what the numbers mean</button>
@@ -319,6 +339,9 @@ input[type=range]:disabled { opacity: .35; }
       <p class="hint" id="noiseBlurb"></p>
     </div>
   </section>
+
+  <section class="card" aria-label="Your music" id="musicCard"></section>
+  <section class="card" aria-label="Save as audio file" id="exportCard"></section>
 
   <p class="disclaimer">TwinTone is for relaxation and listening. It is not a medical device and makes no health claims. Don't use it while driving.</p>
 </div>
@@ -493,10 +516,10 @@ input[type=range]:disabled { opacity: .35; }
     if (!ctx) build();
     try { if (ctx.state !== 'running') await ctx.resume(); } catch {}
     try { keepAlive && keepAlive.play().catch(() => {}); } catch {}
-    st.playing = true; applyLevel(); renderTransport(); mediaSession();
+    st.playing = true; applyLevel(); startMusic(); renderTransport(); mediaSession();
   }
   function pause() {
-    st.playing = false; applyLevel(); renderTransport(); mediaSession();
+    st.playing = false; applyLevel(); stopMusic(.3); renderTransport(); mediaSession();
     try { keepAlive && keepAlive.pause(); } catch {}
   }
   const toggle = () => st.playing ? pause() : play();
@@ -535,6 +558,7 @@ input[type=range]:disabled { opacity: .35; }
     st.noise = n; startNoise();
     document.querySelectorAll('#noiseSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.n === n));
     $('noiseExtra').hidden = n === 'off'; $('noiseBlurb').textContent = NOISE[n][1];
+    if (document.getElementById('exportCard') && document.getElementById('exportCard').children.length) renderExport();
     persist();
   }
 
@@ -546,9 +570,9 @@ input[type=range]:disabled { opacity: .35; }
     $('rdL').textContent = fmt(st.L.f); $('rdR').textContent = fmt(st.R.f);
     $('rdBeat').textContent = `${fmt(Math.abs(b))} Hz · ${band(b)}`;
     $('band').textContent = band(b);
-    $('beatBig').textContent = fmt(Math.abs(b));
+    { const bi = $('beatIn'); if (document.activeElement !== bi) bi.value = fmt(Math.abs(b)).replace(/,/g, ''); sizeBeat(); }
     $('beatSlider').value = Math.min(40, Math.max(0, b)); paintRange($('beatSlider'));
-    $('carrierVal').textContent = fmt(st.L.f) + ' Hz';
+    { const ci = $('carrierIn'); if (document.activeElement !== ci) ci.value = fmt(st.L.f).replace(/,/g, ''); }
     const c = Math.min(CMAX, Math.max(CMIN, st.L.f));
     $('carrier').value = Math.round(1000 * Math.log(c / CMIN) / Math.log(CMAX / CMIN)); paintRange($('carrier'));
     document.querySelectorAll('#chips .chip').forEach(el => el.setAttribute('aria-pressed', Math.abs(b - +el.dataset.v) < .01));
@@ -954,6 +978,11 @@ input[type=range]:disabled { opacity: .35; }
       });
       src.start(T0); src.stop(END + .3);
     });
+    if (MUS.buf && MUS.on) {
+      const mg = ac.createGain(); mg.gain.value = musLevel(); mg.connect(env);
+      const ms = ac.createBufferSource(); ms.buffer = MUS.buf; ms.loop = MUS.loop; ms.connect(mg);
+      ms.start(T0); ms.stop(END + .3);
+    }
 
     const fin = Math.min(8, S.total / 4), fout = Math.min(15, S.total / 4);
     env.gain.setValueAtTime(0, T0); env.gain.linearRampToValueAtTime(1, T0 + fin);
@@ -1063,6 +1092,7 @@ input[type=range]:disabled { opacity: .35; }
         <button class="chipbtn primary" data-sp="${src}${i}">Play</button>
         <button class="chipbtn" data-se="${src}${i}">${src === 'b' ? 'Customize' : 'Edit'}</button>
         <button class="chipbtn" data-ss="${src}${i}">Share</button>
+        <button class="chipbtn" data-sx="${src}${i}">Save audio</button>
         ${src === 'c' ? `<button class="chipbtn warn" data-sd="${i}">Delete</button>` : ''}
       </div></div>`;
   }
@@ -1087,6 +1117,7 @@ input[type=range]:disabled { opacity: .35; }
       if (r[0] === 'b') { d.name = ('My ' + d.name).slice(0, 40); openEditor(d, null); } else openEditor(d, +r.slice(1));
     });
     sh.querySelectorAll('[data-ss]').forEach(b => b.onclick = () => openShare(pick(b.dataset.ss)));
+    sh.querySelectorAll('[data-sx]').forEach(b => b.onclick = () => exportSession(pick(b.dataset.sx)));
     sh.querySelectorAll('[data-sd]').forEach(b => b.onclick = () => {
       if (b.dataset.arm) { mySess.splice(+b.dataset.sd, 1); saveSess(); openSessions('Session deleted.'); }
       else { b.dataset.arm = '1'; b.textContent = 'Tap again to delete'; }
@@ -1231,10 +1262,271 @@ input[type=range]:disabled { opacity: .35; }
     const y = $('sheet').scrollTop; renderStages(); $('sheet').scrollTop = y;
   });
 
+  /* ---------- your music ---------- */
+  // Decoded once at 44.1 kHz so the same buffer plays live, inside sessions and in saved files.
+  const EXP_SR = 44100;
+  const MUS = { name: '', buf: null, on: true, loop: true, vol: .6, src: null, g: null, off: 0, t0: 0, loading: false, err: '' };
+  const musLevel = () => MUS.vol * MUS.vol;
+  function startMusic() {
+    if (!ctx || !MUS.buf || !MUS.on || MUS.src) return;
+    if (!MUS.g) { MUS.g = ctx.createGain(); MUS.g.connect(out); }
+    MUS.g.gain.value = musLevel();
+    const s = ctx.createBufferSource(); s.buffer = MUS.buf; s.loop = MUS.loop; s.connect(MUS.g);
+    const off = MUS.off % MUS.buf.duration;
+    s.start(0, off); MUS.t0 = ctx.currentTime - off;
+    s.onended = () => { if (MUS.src === s) { MUS.src = null; MUS.off = 0; } };
+    MUS.src = s;
+  }
+  function stopMusic(delay) {
+    const s = MUS.src; if (!s || !ctx) return;
+    MUS.src = null; MUS.off = ctx.currentTime - MUS.t0 + (delay || 0);
+    try { s.stop(ctx.currentTime + (delay || 0)); } catch {}
+  }
+  async function loadMusic(file) {
+    MUS.err = '';
+    if (file.size > 120e6) { MUS.err = 'That file is too big. Pick one under 120 MB.'; renderMusic(); return; }
+    MUS.loading = true; renderMusic();
+    try {
+      const ab = await file.arrayBuffer();
+      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      const dc = new OAC(2, 1, EXP_SR);
+      const buf = await new Promise((res, rej) => { const p = dc.decodeAudioData(ab, res, rej); if (p && p.then) p.then(res, rej); });
+      stopMusic(); MUS.buf = buf; MUS.off = 0; MUS.name = file.name.replace(/\.[^.]+$/, '') || 'My music';
+      if (st.playing && MUS.on) startMusic();
+    } catch { MUS.err = "That file couldn't be opened. Try an MP3, M4A or WAV file."; }
+    MUS.loading = false; renderMusic(); renderExport();
+  }
+  const SPK_LO = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9h4l5-4v14l-5-4H4z"/></svg>';
+  const SPK_HI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" stroke="none"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" stroke-linecap="round"/></svg>';
+  function renderMusic() {
+    const c = $('musicCard');
+    if (!MUS.buf) {
+      c.innerHTML = `<span class="label">Your music</span>
+        <p class="hint" style="margin:8px 0 12px">Play a song or recording under the tones. Pick an audio file saved on this device. Songs from Apple Music or Spotify can't be added.</p>
+        <label class="btn-sec file-btn">${MUS.loading ? 'Loading…' : '+ Add a song or recording'}<input type="file" id="musFile" accept="audio/*,.mp3,.m4a,.wav,.aac,.flac,.ogg"></label>
+        ${MUS.err ? `<p class="err">${esc(MUS.err)}</p>` : ''}`;
+      $('musFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) loadMusic(f); });
+      return;
+    }
+    c.innerHTML = `<div class="row"><span class="label">Your music</span><button class="chipbtn warn" id="musDel">Remove</button></div>
+      <div class="mus-name"><b>${esc(MUS.name)}</b><span class="num">${clock(MUS.buf.duration)}</span></div>
+      <div class="vol">${SPK_LO}<input type="range" id="musVol" min="0" max="100" value="${Math.round(MUS.vol * 100)}" aria-label="Music level" style="--c: var(--muted)">${SPK_HI}</div>
+      <div class="seg seg2"><button id="musOn" aria-pressed="${MUS.on}">Play with tones</button><button id="musLoop" aria-pressed="${MUS.loop}">Loop</button></div>
+      <p class="hint">Plays under the tones, inside sessions and in saved files. You'll need to add it again next time you open TwinTone.</p>`;
+    paintRange($('musVol'));
+    $('musVol').addEventListener('input', e => { MUS.vol = e.target.value / 100; paintRange(e.target); if (MUS.g && ctx) MUS.g.gain.setTargetAtTime(musLevel(), ctx.currentTime, .03); });
+    $('musOn').addEventListener('click', () => { MUS.on = !MUS.on; if (MUS.on && st.playing) startMusic(); else stopMusic(); renderMusic(); renderExport(); });
+    $('musLoop').addEventListener('click', () => { MUS.loop = !MUS.loop; if (MUS.src) MUS.src.loop = MUS.loop; renderMusic(); });
+    $('musDel').addEventListener('click', () => { stopMusic(); MUS.buf = null; MUS.name = ''; MUS.off = 0; renderMusic(); renderExport(); });
+  }
+
+  /* ---------- save as audio file ---------- */
+  // Rendered in JavaScript sample by sample (not Web Audio) so long files never break
+  // phase between chunks, then encoded as MP3 (lamejs, loaded only when needed) or WAV.
+  const EXP = { len: 20, fmt: 'mp3', busy: false };
+  const MB_PER_MIN = { mp3: 1.44, wav: 10.58 };
+  const WAV_MAX_MIN = 20;
+  const xMB = (min, f) => { const v = min * MB_PER_MIN[f]; return v < 10 ? v.toFixed(1) : Math.round(v); };
+  function renderExport() {
+    if (EXP.fmt === 'wav' && EXP.len > WAV_MAX_MIN) EXP.fmt = 'mp3';
+    const parts = ['both ears', st.noise !== 'off' ? 'your background sound' : '', MUS.buf && MUS.on ? 'your music' : ''].filter(Boolean);
+    const list = parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0];
+    $('exportCard').innerHTML = `<span class="label">Save as audio file</span>
+      <p class="hint" style="margin:8px 0 12px">Saves ${list} as a file you can play anywhere: in the car, on a speaker or another phone. No app needed. Headphones are still needed to hear the beat.</p>
+      <div class="label" style="margin-bottom:6px">Length</div>
+      <div class="seg seg5">${[5, 10, 20, 30, 60].map(m => `<button data-xlen="${m}" aria-pressed="${EXP.len === m}">${m < 60 ? m + ' min' : '1 hr'}</button>`).join('')}</div>
+      <div class="label" style="margin:12px 0 6px">Format</div>
+      <div class="seg seg2"><button data-xfmt="mp3" aria-pressed="${EXP.fmt === 'mp3'}">MP3 · ${xMB(EXP.len, 'mp3')} MB</button>
+        <button data-xfmt="wav" aria-pressed="${EXP.fmt === 'wav'}" ${EXP.len > WAV_MAX_MIN ? 'disabled' : ''}>WAV · ${xMB(EXP.len, 'wav')} MB</button></div>
+      <p class="hint" style="margin-top:6px">${EXP.len > WAV_MAX_MIN ? 'WAV files over 20 minutes are too big for most phones.' : 'MP3 is small and plays everywhere. WAV is exact but large.'}</p>
+      <button class="btn" id="xGo" style="width:100%;margin-top:12px;min-height:48px">Make ${EXP.len < 60 ? EXP.len + '-minute' : '1-hour'} file</button>`;
+    document.querySelectorAll('[data-xlen]').forEach(b => b.addEventListener('click', () => { EXP.len = +b.dataset.xlen; renderExport(); }));
+    document.querySelectorAll('[data-xfmt]').forEach(b => b.addEventListener('click', () => { if (!b.disabled) { EXP.fmt = b.dataset.xfmt; renderExport(); } }));
+    $('xGo').addEventListener('click', () => startExport(freePlan(EXP.len), EXP.fmt, `TwinTone L${fmt(st.L.f)} R${fmt(st.R.f)} ${EXP.len}min`));
+  }
+  const musPlan = () => MUS.buf && MUS.on ? { buf: MUS.buf, loop: MUS.loop, g: musLevel() } : null;
+  function freePlan(min) {
+    const dur = min * 60;
+    const lay = { fl: st.L.f, fr: st.R.f, wl: st.L.w, wr: st.R.w, gl: st.L.mute ? 0 : st.L.v, gr: st.R.mute ? 0 : st.R.v };
+    return { dur, fin: 3, fout: 6, out: .9, music: musPlan(), stages: [{ start: 0, end: dur, ramp: 0, noise: st.noise, nl: st.noiseLevel, layers: [lay] }] };
+  }
+  function sessPlan(s) {
+    const tl = timeline(s), dur = totalSec(s), lg = n => .55 / Math.sqrt(n);
+    return { dur, fin: Math.min(8, dur / 4), fout: Math.min(15, dur / 4), out: .9, music: musPlan(),
+      stages: tl.map(x => ({ start: x.start, end: x.end, ramp: x.ramp, noise: x.noise, nl: x.nl,
+        layers: x.layers.map(l => ({ fl: l.c, fr: l.c + l.b, wl: 'sine', wr: 'sine', gl: lg(x.layers.length), gr: lg(x.layers.length) })) })) };
+  }
+  // Same blend rules as the live session scheduler: shared tone layers glide, new ones fade in, dropped ones fade out.
+  const NTYPES = ['white', 'pink', 'brown', 'surf'];
+  function ctrlAt(P, t) {
+    const S_ = P.stages; let i = S_.findIndex(x => t < x.end); if (i < 0) i = S_.length - 1;
+    const x = S_[i], p = i ? S_[i - 1] : null;
+    const u = Math.min(1, Math.max(0, (t - x.start) / Math.max(.05, Math.min(x.ramp, x.end - x.start))));
+    const nu = Math.min(1, Math.max(0, (t - x.start) / Math.max(.05, Math.min(Math.max(x.ramp, 2), x.end - x.start))));
+    const slots = [];
+    for (let k = 0; k < 3; k++) {
+      const l = x.layers[k], q = p && p.layers[k];
+      if (l && q) slots.push({ fl: q.fl + (l.fl - q.fl) * u, fr: q.fr + (l.fr - q.fr) * u, wl: l.wl, wr: l.wr, gl: q.gl + (l.gl - q.gl) * u, gr: q.gr + (l.gr - q.gr) * u });
+      else if (l) slots.push(Object.assign({}, l, { gl: l.gl * u, gr: l.gr * u }));
+      else if (q) slots.push(Object.assign({}, q, { gl: q.gl * (1 - u), gr: q.gr * (1 - u) }));
+      else slots.push(null);
+    }
+    const noise = {};
+    NTYPES.forEach(n => { const a = p && p.noise === n ? p.nl : 0, b = x.noise === n ? x.nl : 0; noise[n] = a + (b - a) * nu; });
+    const env = t < P.fin ? t / P.fin : t > P.dur - P.fout ? Math.max(0, (P.dur - t) / P.fout) : 1;
+    return { slots, noise, env };
+  }
+  const TAU = 6.283185307179586;
+  const blep = (t, dt) => t < dt ? (t /= dt, t + t - t * t - 1) : t > 1 - dt ? (t = (t - 1) / dt, t * t + t + t + 1) : 0;
+  function wv(w, t, dt) {
+    if (w === 'sine') return Math.sin(TAU * t);
+    if (w === 'triangle') return 1 - 4 * Math.abs(t - .5);
+    if (w === 'sawtooth') return (2 * t - 1) - blep(t, dt);
+    let v = t < .5 ? 1 : -1; v += blep(t, dt); let t2 = t + .5; if (t2 >= 1) t2 -= 1; return v - blep(t2, dt);
+  }
+  function makeRenderer(P) {
+    const sr = EXP_SR, N = Math.round(P.dur * sr);
+    const ph = [[0, 0], [0, 0], [0, 0]];
+    const nz = [0, 1].map(() => ({ p0: 0, p1: 0, p2: 0, s0: 0, s1: 0, s2: 0, br: 0, lp1: 0, lp2: 0 }));
+    const m = P.music, mL = m && m.buf.getChannelData(0), mR = m && (m.buf.numberOfChannels > 1 ? m.buf.getChannelData(1) : mL);
+    const mLen = m ? mL.length : 0, mRate = m ? m.buf.sampleRate / sr : 1;
+    let pos = 0;
+    return { N, next(L, R) {
+      const n = L.length;
+      for (let j = 0; j < n; j += 128) {
+        const t = (pos + j) / sr, c = ctrlAt(P, t), blk = Math.min(128, n - j), e = c.env * P.out;
+        for (let k = 0; k < 3; k++) {
+          const s = c.slots[k]; if (!s || (s.gl <= 0 && s.gr <= 0)) continue;
+          const dl = s.fl / sr, dr = s.fr / sr; let a = ph[k][0], b = ph[k][1];
+          for (let i = 0; i < blk; i++) {
+            L[j + i] += wv(s.wl, a, dl) * s.gl; R[j + i] += wv(s.wr, b, dr) * s.gr;
+            a += dl; if (a >= 1) a -= 1; b += dr; if (b >= 1) b -= 1;
+          }
+          ph[k][0] = a; ph[k][1] = b;
+        }
+        const nw = c.noise.white, np = c.noise.pink, nb = c.noise.brown, ns = c.noise.surf;
+        if (nw + np + nb + ns > 0) {
+          const fc = 850 + 350 * Math.sin(TAU * .075 * t), al = 1 - Math.exp(-TAU * fc / sr);
+          const mod = .55 + .35 * Math.sin(TAU * .075 * t) + .12 * Math.sin(TAU * .031 * t);
+          for (let ch = 0; ch < 2; ch++) {
+            const z = nz[ch], O = ch ? R : L;
+            for (let i = 0; i < blk; i++) {
+              const w = Math.random() * 2 - 1; let v = 0;
+              if (nw) v += w * .3 * nw;
+              if (np) { z.p0 = .99765 * z.p0 + w * .099046; z.p1 = .963 * z.p1 + w * .2965164; z.p2 = .57 * z.p2 + w * 1.0526913; v += (z.p0 + z.p1 + z.p2 + w * .1848) * .12 * np; }
+              if (nb) { z.br = (z.br + .02 * w) / 1.02; v += z.br * 3 * nb; }
+              if (ns) {
+                const w2 = Math.random() * 2 - 1;
+                z.s0 = .99765 * z.s0 + w2 * .099046; z.s1 = .963 * z.s1 + w2 * .2965164; z.s2 = .57 * z.s2 + w2 * 1.0526913;
+                z.lp1 += al * ((z.s0 + z.s1 + z.s2 + w2 * .1848) * .12 - z.lp1); z.lp2 += al * (z.lp1 - z.lp2);
+                v += z.lp2 * 1.4 * mod * ns;
+              }
+              O[j + i] += v;
+            }
+          }
+        }
+        if (m) {
+          for (let i = 0; i < blk; i++) {
+            let idx = Math.floor((pos + j + i) * mRate);
+            if (idx >= mLen) { if (!m.loop) break; idx %= mLen; }
+            L[j + i] += mL[idx] * m.g; R[j + i] += mR[idx] * m.g;
+          }
+        }
+        for (let i = 0; i < blk; i++) { L[j + i] *= e; R[j + i] *= e; }
+      }
+      pos += n;
+    } };
+  }
+  const toI16 = a => { const o = new Int16Array(a.length); for (let i = 0; i < a.length; i++) { const v = Math.max(-1, Math.min(1, a[i])); o[i] = v < 0 ? v * 32768 : v * 32767; } return o; };
+  function wavHeader(frames) {
+    const b = new ArrayBuffer(44), v = new DataView(b), bytes = frames * 4;
+    const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + bytes, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true);
+    v.setUint32(24, EXP_SR, true); v.setUint32(28, EXP_SR * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, bytes, true);
+    return b;
+  }
+  let lameP = null;
+  function loadLame() {
+    if (window.lamejs) return Promise.resolve(window.lamejs);
+    if (!lameP) lameP = new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js';
+      s.onload = () => window.lamejs ? res(window.lamejs) : rej(new Error('lame')); s.onerror = () => { lameP = null; rej(new Error('lame')); };
+      document.head.appendChild(s);
+    });
+    return lameP;
+  }
+  async function renderFile(P, kind, onPct) {
+    const R_ = makeRenderer(P), CH = 1152 * 32, parts = [];
+    let enc = null;
+    if (kind === 'mp3') { const lj = await loadLame(); enc = new lj.Mp3Encoder(2, EXP_SR, 192); }
+    else parts.push(wavHeader(R_.N));
+    for (let done = 0; done < R_.N; done += CH) {
+      const n = Math.min(CH, R_.N - done), L = new Float32Array(n), R = new Float32Array(n);
+      R_.next(L, R);
+      const a = toI16(L), b = toI16(R);
+      if (enc) { const d = enc.encodeBuffer(a, b); if (d.length) parts.push(new Uint8Array(d)); }
+      else { const il = new Int16Array(n * 2); for (let i = 0; i < n; i++) { il[2 * i] = a[i]; il[2 * i + 1] = b[i]; } parts.push(il.buffer); }
+      onPct((done + n) / R_.N);
+      await new Promise(r => setTimeout(r, 0));
+      if (sheetKind !== 'export') throw new Error('cancel');
+    }
+    if (enc) { const d = enc.flush(); if (d.length) parts.push(new Uint8Array(d)); }
+    return new Blob(parts, { type: kind === 'mp3' ? 'audio/mpeg' : 'audio/wav' });
+  }
+  const safeName = s => String(s).replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'TwinTone';
+  let framed = false; try { framed = window.top !== window; } catch { framed = true; }
+  async function startExport(P, kind, base) {
+    if (EXP.busy) return;
+    EXP.busy = true;
+    const filename = safeName(base) + '.' + kind;
+    openSheet('export', `<div class="sheet-head"><button data-xcancel>Cancel</button><h2>Making your file</h2><span style="min-width:60px"></span></div>
+      <div class="xprog"><b class="num" id="xPct">0%</b><div class="xbar"><i id="xBar"></i></div>
+      <p class="hint">${esc(filename)} · ${durLabel(P.dur)}</p>
+      <p class="hint">Keep this screen open. Longer files can take a couple of minutes.</p></div>`);
+    $('sheet').querySelector('[data-xcancel]').onclick = closeSheet;
+    let blob = null, err = '';
+    try {
+      blob = await renderFile(P, kind, p => { const v = Math.round(p * 100); const a = $('xPct'), b = $('xBar'); if (a) a.textContent = v + '%'; if (b) b.style.width = v + '%'; });
+    } catch (e) {
+      if (e && e.message === 'lame') err = kind === 'mp3' && P.dur <= WAV_MAX_MIN * 60 ? "The MP3 maker didn't load. Check your connection, or choose WAV." : "The MP3 maker didn't load. Check your connection and try again.";
+      else if (e && e.message !== 'cancel') err = "Something went wrong making the file. Try a shorter length.";
+    }
+    EXP.busy = false;
+    if (!blob && !err) return;
+    if (err) { openSheet('export-err', `<div class="sheet-head"><span style="min-width:60px"></span><h2>Couldn't make the file</h2><button data-close>Done</button></div><p class="err" style="font-size:15px">${esc(err)}</p>`); $('sheet').querySelector('[data-close]').onclick = closeSheet; return; }
+    openSheet('export-done', `<div class="sheet-head"><span style="min-width:60px"></span><h2>File ready</h2><button data-close>Done</button></div>
+      <div class="preview" style="margin-top:4px"><span class="t">${esc(filename)}</span><span class="s">${durLabel(P.dur)} · ${(blob.size / 1e6).toFixed(1)} MB</span></div>
+      <button class="btn" id="xSave" style="width:100%;margin-top:12px;min-height:50px">Save or share file</button>
+      <p class="hint" style="font-size:14px;margin:12px 2px 0">On iPhone, choose <b>Save to Files</b>. Then open it from the Files app, or add it to any music player.</p>
+      ${framed ? '<p class="err">Saving may be blocked in this preview. It works when TwinTone is opened from its own website.</p>' : ''}`);
+    $('sheet').querySelector('[data-close]').onclick = closeSheet;
+    $('xSave').onclick = () => {
+      const file = new File([blob], filename, { type: blob.type });
+      const mobile = matchMedia('(pointer: coarse)').matches;
+      if (mobile && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: filename }).catch(() => {}); return; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    };
+  }
+  const exportSession = s => startExport(sessPlan(s), 'mp3', 'TwinTone ' + s.name);
+
   /* ---------- wire up ---------- */
+  function sizeBeat() { const bi = $('beatIn'); bi.style.width = Math.max(1.4, bi.value.length * .62 + .35) + 'em'; }
+  const numIn = (el, apply) => {
+    el.addEventListener('change', () => { const v = parseFloat(el.value.replace(/,/g, '')); if (!isNaN(v)) apply(v); renderFreqs(); });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') el.blur(); });
+    el.addEventListener('focus', () => setTimeout(() => { try { el.select(); } catch {} }, 0));
+    el.addEventListener('blur', () => renderFreqs());
+  };
+  numIn($('beatIn'), v => setBeat(Math.min(40, Math.max(0, r2(v)))));
+  $('beatIn').addEventListener('input', sizeBeat);
+  numIn($('carrierIn'), v => setCarrier(v));
+  document.querySelectorAll('#beatNudge [data-bd]').forEach(b => b.addEventListener('click', () => setBeat(Math.min(40, Math.max(0, r2(beat() + parseFloat(b.dataset.bd)))))));
+  document.querySelectorAll('#carrierNudge [data-cd]').forEach(b => b.addEventListener('click', () => setCarrier(st.L.f + parseFloat(b.dataset.cd))));
   $('sessBrowse').addEventListener('click', () => openSessions());
   $('sessCreate').addEventListener('click', () => openEditor(newDraft(), null));
   renderQuick();
+  renderMusic(); renderExport();
   $('chips').innerHTML = QUICK.map(([n, v]) => `<button class="chip" data-v="${v}" aria-pressed="false" aria-label="${n} ${v} hertz"><b>${fmt(v)}</b><small>${n}</small></button>`).join('');
   document.querySelectorAll('#chips .chip').forEach(c => c.addEventListener('click', () => setBeat(+c.dataset.v)));
   $('beatSlider').addEventListener('input', e => setBeat(+e.target.value));
