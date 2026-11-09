@@ -498,14 +498,18 @@ input[type=range]:disabled { opacity: .35; }
   }
 
   // iPhone: a silent media element lets Web Audio play with the ring/silent switch on.
+  // Newer iPhones: the audio session API alone lets sound play with the ring switch off.
+  // Older ones need a silent media element. Keep it long: car stereos mute the speakers
+  // every time a looping clip ends and restarts, which cut the tone on and off.
   function ensureKeepAlive() {
-    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+    try { if (navigator.audioSession) { navigator.audioSession.type = 'playback'; return; } } catch {}
     if (keepAlive) return;
     try {
-      const sr = 8000, n = sr, b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+      const sr = 2000, n = sr * 600, b = new ArrayBuffer(44 + n), v = new DataView(b);
       const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
-      w(0,'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8,'WAVEfmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
-      v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,n*2,true);
+      w(0,'RIFF'); v.setUint32(4, 36 + n, true); w(8,'WAVEfmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+      v.setUint32(24,sr,true); v.setUint32(28,sr,true); v.setUint16(32,1,true); v.setUint16(34,8,true); w(36,'data'); v.setUint32(40,n,true);
+      new Uint8Array(b, 44).fill(128);
       keepAlive = new Audio(URL.createObjectURL(new Blob([b], { type: 'audio/wav' })));
       keepAlive.loop = true; keepAlive.setAttribute('playsinline', '');
     } catch {}
